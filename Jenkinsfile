@@ -45,9 +45,9 @@ pipeline{
             steps{
                 script{
                     withDockerRegistry(credentialsId: 'dockerhub', toolName: 'docker'){
-                        dir('/home/ubuntu/.jenkins/workspace/browser/.docker/brave')
+                        dir('/home/ubuntu/.jenkins/workspace/browser/.docker/brave'){
                             sh 'docker build -t mukeshr29/bravebrowser .'
-                        
+                        }
                     }
                 }
             }
