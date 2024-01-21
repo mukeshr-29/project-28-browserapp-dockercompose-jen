@@ -41,15 +41,30 @@ pipeline{
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        // stage('docker build and push'){
-        //     steps{
-        //         script{
-        //             withDockerRegistry(credentialsId: 'dockerhub', toolName: 'docker'){
-                        
-        //             }
-        //         }
-
-        //     }
-        // }
+        stage('docker build and tag'){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'dockerhub', toolName: 'docker'){
+                        dir('/home/ubuntu/.jenkins/workspace/browser/.docker/brave'){
+                            sh 'docker build -t mukeshr29/bravebrowser .'
+                        }
+                    }
+                }
+            }
+        }
+        stage('trivy img scan'){
+            steps{
+                sh 'trivy image mukeshr29/bravebrowser > trivyimg.txt'
+            }
+        }
+        stage('docker img push to dockerhub'){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'dockerhub', toolName: 'docker'){
+                        sh 'docker push mukeshr29/bravebrowser'
+                    }
+                }
+            }
+        }
     }
 }
